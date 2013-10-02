@@ -169,9 +169,15 @@
     var _run;
 
     function Navigator() {
+      var _this = this;
+
+      this.inTransition = false;
       this.shouldHold = false;
       this.failedAction = null;
       this.transitionFinished = new Signal();
+      this.transitionFinished.add(function() {
+        return _this.inTransition = false;
+      });
     }
 
     Navigator.prototype.perform = function(node, context, failedAction) {
@@ -195,21 +201,34 @@
     };
 
     Navigator.prototype.hold = function() {
-      return this.shouldHold = true;
+      if (this.inTransition) {
+        return this.shouldHold = true;
+      }
     };
 
     Navigator.prototype["continue"] = function() {
-      this.shouldHold = false;
-      return _run.call(this, this.pendingActions);
+      if (this.inTransition) {
+        this.shouldHold = false;
+        return _run.call(this, this.pendingActions);
+      }
     };
 
     Navigator.prototype.halt = function() {
-      throw new Error("Halt");
+      if (this.inTransition) {
+        if (this.shouldHold) {
+          this.shouldHold = false;
+          this.inTransition = false;
+          return typeof this.failedAction === "function" ? this.failedAction() : void 0;
+        } else {
+          throw new Error("Halt");
+        }
+      }
     };
 
     _run = function(actions) {
       var action, e;
 
+      this.inTransition = true;
       try {
         this.allActionsRun = true;
         while (this.pendingActions.length) {
