@@ -3,17 +3,45 @@ NavigationNode = require 'gator/navigation_node'
 describe "NavigationNode", ->
 	node = null
 
+	action = ->
+
 	beforeEach ->
 		node = new NavigationNode('state1', 'state2')
 
 	describe "#registerAction", ->
-		spyAction = null
 
 		beforeEach ->
-			node.registerAction spyAction = jasmine.createSpy('spyAction')
+			node.registerAction action
 
 		it "will add an action to the list of actions", ->
-			expect(node.actions).toContain spyAction
+			expect(node.actions).toContain action
+
+	describe "#registerActionAt", ->
+
+		beforeEach ->
+			node.registerAction ->
+			node.registerAction ->
+			node.registerAction ->
+
+		it "will register negative positions at zero", ->
+			node.registerActionAt -5, action
+			expect(node.actions[0]).toEqual action
+
+		it "will register positions within the action list's length at the requested position", ->
+			node.registerActionAt 1, action
+			expect(node.actions[1]).toEqual action
+
+		it "will register positions greater than the action list's length as the last action", ->
+			node.registerActionAt 5, action
+			expect(node.actions[3]).toEqual action
+
+		it "will register 'first' at the first position", ->
+			node.registerActionAt 'first', action
+			expect(node.actions[0]).toEqual action
+
+		it "will register 'last' at the last position", ->
+			node.registerActionAt 'last', action
+			expect(node.actions[3]).toEqual action
 
 	describe "#matches", ->
 
