@@ -1,3 +1,5 @@
+v0.0.4 added priority tags to action registration functions to allow for ordered calls in a complex application
+
 v0.0.3 fixed bug in navigator to guarantee that only one transition can be running live at one time. in the event multiple navigable UIs are shown at once, they will require multiple instances of graphs
 
 v0.0.2 updated navigator class to handle halting while in a hold pattern
