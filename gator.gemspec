@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "gator"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tim Shelburne"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email = "shelburt02@gmail.com"
   s.executables = ["gator.min.js", "gator.min.js.gz"]
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.rdoc", "bin/gator.min.js", "bin/gator.min.js.gz", "lib/gator.rb", "lib/gator/symbols.rb"]
-  s.files = ["CHANGELOG", "Gemfile", "Gemfile.lock", "LICENSE", "Manifest", "README.rdoc", "Rakefile", "assets/scripts/coffee/navigation_graph.coffee", "assets/scripts/coffee/navigation_node.coffee", "assets/scripts/coffee/navigator.coffee", "bin/gator.min.js", "bin/gator.min.js.gz", "config/assets.rb", "gator.gemspec", "lib/gator.rb", "lib/gator/symbols.rb", "spec/bin/gator.js", "spec/config/assets.rb", "spec/jasmine.yml", "spec/runner.html", "spec/support/classes.coffee", "spec/support/helpers.coffee", "spec/support/mocks.coffee", "spec/support/objects.coffee", "spec/support/requirements.coffee", "spec/tests/navigation_graph_spec.coffee", "spec/tests/navigation_node_spec.coffee", "spec/tests/navigator_spec.coffee"]
+  s.files = ["CHANGELOG", "Gemfile", "Gemfile.lock", "LICENSE", "Manifest", "README.rdoc", "Rakefile", "assets/scripts/coffee/gator/navigation_graph.coffee", "assets/scripts/coffee/gator/navigation_node.coffee", "assets/scripts/coffee/gator/navigator.coffee", "bin/gator.min.js", "bin/gator.min.js.gz", "config/assets.rb", "gator.gemspec", "lib/gator.rb", "lib/gator/symbols.rb", "spec/bin/gator.js", "spec/config/assets.rb", "spec/jasmine.yml", "spec/runner.html", "spec/support/classes.coffee", "spec/support/helpers.coffee", "spec/support/mocks.coffee", "spec/support/objects.coffee", "spec/support/requirements.coffee", "spec/tests/navigation_graph_spec.coffee", "spec/tests/navigation_node_spec.coffee", "spec/tests/navigator_spec.coffee"]
   s.homepage = "https://github.com/tshelburne/gator-js"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Gator", "--main", "README.rdoc"]
   s.require_paths = ["lib"]

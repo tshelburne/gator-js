@@ -5,9 +5,9 @@ LICENSE
 Manifest
 README.rdoc
 Rakefile
-assets/scripts/coffee/navigation_graph.coffee
-assets/scripts/coffee/navigation_node.coffee
-assets/scripts/coffee/navigator.coffee
+assets/scripts/coffee/gator/navigation_graph.coffee
+assets/scripts/coffee/gator/navigation_node.coffee
+assets/scripts/coffee/gator/navigator.coffee
 bin/gator.min.js
 bin/gator.min.js.gz
 config/assets.rb
