@@ -74,6 +74,31 @@ describe "Navigator", ->
 				it "will run the failed action", ->
 					expect(failedAction).toHaveBeenCalled()
 
+			describe "and another transition is attempted before the current one is closed", ->
+				error = null
+
+				beforeEach ->
+					try 
+						navigator.perform(new NavigationNode('state2', 'state3')) 
+					catch e
+						error = e
+
+				it "will throw an error", ->
+					expect(error).not.toBeNull()
+					expect(error.message).toEqual "The previous transition ('state1' to 'state2') is not closed."
+
+				it "will not kill the previous transition", ->
+					expect(navigator.inTransition).toBeTruthy()
+
+				it "will not overwrite the previous node", ->
+					expect(navigator.node).toEqual node
+
+				it "will not overwrite the previous context", ->
+					expect(navigator.context).toEqual "context"
+
+				it "will not overwrite the previous failed action", ->
+					expect(navigator.failedAction).toEqual failedAction
+
 		describe "when using #hold and #continue in the action", ->
 
 			beforeEach ->

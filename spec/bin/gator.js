@@ -183,9 +183,21 @@
     Navigator.prototype.perform = function(node, context, failedAction) {
       var action;
 
-      this.node = node != null ? node : null;
-      this.context = context != null ? context : null;
-      this.failedAction = failedAction != null ? failedAction : null;
+      if (node == null) {
+        node = null;
+      }
+      if (context == null) {
+        context = null;
+      }
+      if (failedAction == null) {
+        failedAction = null;
+      }
+      if (this.inTransition) {
+        throw new Error("The previous transition ('" + this.node.from + "' to '" + this.node.to + "') is not closed.");
+      }
+      this.node = node;
+      this.context = context;
+      this.failedAction = failedAction;
       this.pendingActions = (function() {
         var _i, _len, _ref, _results;
 

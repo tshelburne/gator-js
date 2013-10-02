@@ -9,7 +9,11 @@ class Navigator
 		@transitionFinished = new Signal()
 		@transitionFinished.add => @inTransition = false
 
-	perform: (@node=null, @context=null, @failedAction=null)-> 
+	perform: (node=null, context=null, failedAction=null)-> 
+		throw new Error "The previous transition ('#{@node.from}' to '#{@node.to}') is not closed." if @inTransition
+		@node = node
+		@context = context
+		@failedAction = failedAction
 		@pendingActions = (action for action in @node.actions)
 		_run.call @, @pendingActions
 
