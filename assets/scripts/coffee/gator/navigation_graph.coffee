@@ -1,5 +1,5 @@
-Navigator = require 'navigator'
-NavigationNode = require 'navigation_node'
+Navigator = require 'gator/navigator'
+NavigationNode = require 'gator/navigation_node'
 
 class NavigationGraph
 

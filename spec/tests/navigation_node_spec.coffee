@@ -1,4 +1,4 @@
-NavigationNode = require 'navigation_node'
+NavigationNode = require 'gator/navigation_node'
 
 describe "NavigationNode", ->
 	node = null

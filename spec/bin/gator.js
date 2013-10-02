@@ -6,9 +6,9 @@
     return (function() {
   var NavigationGraph, NavigationNode, Navigator;
 
-  Navigator = require('navigator');
+  Navigator = require('gator/navigator');
 
-  NavigationNode = require('navigation_node');
+  NavigationNode = require('gator/navigation_node');
 
   NavigationGraph = (function() {
     var _setFrom;
@@ -107,7 +107,7 @@
 }).call(this);
 
   };
-  modules.__navigation_graph = function() {
+  modules.gator__navigation_graph = function() {
     if (navigation_graphCache === null) {
       navigation_graphCache = navigation_graphFunc();
     }
@@ -147,7 +147,7 @@
 }).call(this);
 
   };
-  modules.__navigation_node = function() {
+  modules.gator__navigation_node = function() {
     if (navigation_nodeCache === null) {
       navigation_nodeCache = navigation_nodeFunc();
     }
@@ -245,7 +245,7 @@
 }).call(this);
 
   };
-  modules.__navigator = function() {
+  modules.gator__navigator = function() {
     if (navigatorCache === null) {
       navigatorCache = navigatorFunc();
     }

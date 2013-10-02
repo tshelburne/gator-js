@@ -1,6 +1,6 @@
-NavigationGraph = require 'navigation_graph'
-Navigator = require 'navigator'
-NavigationNode = require 'navigation_node'
+NavigationGraph = require 'gator/navigation_graph'
+Navigator = require 'gator/navigator'
+NavigationNode = require 'gator/navigation_node'
 
 describe "NavigationGraph", ->
 	graph = null
