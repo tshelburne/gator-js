@@ -9,14 +9,16 @@ Gem::Specification.new do |s|
   s.date = "2013-10-02"
   s.description = ""
   s.email = "shelburt02@gmail.com"
-  s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.rdoc", "lib/gator.rb", "lib/gator/symbols.rb"]
-  s.files = ["CHANGELOG", "Gemfile", "Gemfile.lock", "gator.gemspec", "LICENSE", "Manifest", "README.rdoc", "Rakefile", "assets/scripts/coffee/library.coffee", "config/assets.rb", "lib/gator.rb", "lib/gator/symbols.rb", "spec/jasmine.yml", "spec/support/classes.coffee", "spec/support/helpers.coffee", "spec/support/mocks.coffee", "spec/support/objects.coffee", "spec/support/requirements.coffee"]
-  s.homepage = "https://github.com/tshelburne/GITHUB_NAME"
+  s.executables = ["gator.min.js", "gator.min.js.gz"]
+  s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.rdoc", "bin/gator.min.js", "bin/gator.min.js.gz", "lib/gator.rb", "lib/gator/symbols.rb"]
+  s.files = ["CHANGELOG", "Gemfile", "Gemfile.lock", "LICENSE", "Manifest", "README.rdoc", "Rakefile", "assets/scripts/coffee/navigation_graph.coffee", "assets/scripts/coffee/navigation_node.coffee", "assets/scripts/coffee/navigator.coffee", "bin/gator.min.js", "bin/gator.min.js.gz", "config/assets.rb", "gator.gemspec", "lib/gator.rb", "lib/gator/symbols.rb", "spec/bin/gator.js", "spec/config/assets.rb", "spec/jasmine.yml", "spec/runner.html", "spec/support/classes.coffee", "spec/support/helpers.coffee", "spec/support/mocks.coffee", "spec/support/objects.coffee", "spec/support/requirements.coffee", "spec/tests/navigation_graph_spec.coffee", "spec/tests/navigation_node_spec.coffee", "spec/tests/navigator_spec.coffee"]
+  s.homepage = "https://github.com/tshelburne/gator-js"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Gator", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "gator"
   s.rubygems_version = "1.8.24"
   s.summary = ""
+  s.license = "MIT"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
