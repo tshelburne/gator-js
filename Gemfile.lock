@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/tshelburne/cronus-js.git
+  revision: 741fe331ac6f6d2e5dc0a671ade6bc86fda353c6
+  specs:
+    cronus (0.0.1)
+
+GIT
   remote: git://github.com/tshelburne/keystone.git
   revision: db58bbfb3a445a879bc96afad82bfb196fe9470a
   specs:
@@ -86,6 +92,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  cronus!
   echoe
   jasmine
   jasmine-headless-webkit
