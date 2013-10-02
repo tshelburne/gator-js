@@ -3,25 +3,36 @@ Signal = require 'cronus/signal'
 class Navigator
 
 	constructor: ->
+		@inTransition = false
 		@shouldHold = false
 		@failedAction = null
 		@transitionFinished = new Signal()
+		@transitionFinished.add => @inTransition = false
 
 	perform: (@node=null, @context=null, @failedAction=null)-> 
 		@pendingActions = (action for action in @node.actions)
 		_run.call @, @pendingActions
 
-	hold: -> @shouldHold = true
+	hold: -> @shouldHold = true if @inTransition 
 
 	continue: -> 
-		@shouldHold = false
-		_run.call @, @pendingActions
+		if @inTransition
+			@shouldHold = false
+			_run.call @, @pendingActions
 
-	halt: -> throw new Error "Halt"
+	halt: -> 
+		if @inTransition
+			if @shouldHold
+				@shouldHold = false
+				@inTransition = false
+				@failedAction?()
+			else	
+				throw new Error "Halt"
 
 	# PRIVATE
 
 	_run = (actions)->
+		@inTransition = true
 		try
 			@allActionsRun = true
 			while @pendingActions.length
