@@ -11,14 +11,17 @@
   NavigationNode = require('navigation_node');
 
   NavigationGraph = (function() {
+    var _setFrom;
+
     function NavigationGraph(navigator) {
       this.navigator = navigator;
       this.nodes = [];
-      this.currentFrom = null;
+      this.currentFrom = 'initial';
+      this.navigator.transitionFinished.add(_setFrom.call(this));
     }
 
     NavigationGraph.create = function() {
-      return this(new Navigator());
+      return new this(new Navigator());
     };
 
     NavigationGraph.prototype.registerTransition = function(from, to) {
@@ -28,21 +31,25 @@
     };
 
     NavigationGraph.prototype.hasTransition = function(from, to) {
-      return getTransition(from, to) != null;
+      return this.getTransition(from, to) != null;
     };
 
     NavigationGraph.prototype.getTransition = function(from, to) {
-      var node, _i, _len, _ref, _results;
+      var node;
 
-      _ref = this.nodes;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        node = _ref[_i];
-        if (node.matches(from, to)) {
-          _results.push(node);
+      return ((function() {
+        var _i, _len, _ref, _results;
+
+        _ref = this.nodes;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          node = _ref[_i];
+          if (node.matches(from, to)) {
+            _results.push(node);
+          }
         }
-      }
-      return _results;
+        return _results;
+      }).call(this))[0] || null;
     };
 
     NavigationGraph.prototype.registerAction = function(action, from, to) {
@@ -81,6 +88,14 @@
       } else {
         return typeof failedAction === "function" ? failedAction() : void 0;
       }
+    };
+
+    _setFrom = function() {
+      var _this = this;
+
+      return function(to) {
+        return _this.currentFrom = to;
+      };
     };
 
     return NavigationGraph;
@@ -146,7 +161,9 @@
   var navigatorCache = null;
   var navigatorFunc = function() {
     return (function() {
-  var Navigator;
+  var Navigator, Signal;
+
+  Signal = require('cronus/signal');
 
   Navigator = (function() {
     var _run;
@@ -154,24 +171,26 @@
     function Navigator() {
       this.shouldHold = false;
       this.failedAction = null;
+      this.transitionFinished = new Signal();
     }
 
     Navigator.prototype.perform = function(node, context, failedAction) {
       var action;
 
-      this.context = context;
-      this.failedAction = failedAction;
+      this.node = node != null ? node : null;
+      this.context = context != null ? context : null;
+      this.failedAction = failedAction != null ? failedAction : null;
       this.pendingActions = (function() {
         var _i, _len, _ref, _results;
 
-        _ref = node.actions;
+        _ref = this.node.actions;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           action = _ref[_i];
           _results.push(action);
         }
         return _results;
-      })();
+      }).call(this);
       return _run.call(this, this.pendingActions);
     };
 
@@ -189,20 +208,24 @@
     };
 
     _run = function(actions) {
-      var action, e, _results;
+      var action, e;
 
       try {
-        _results = [];
+        this.allActionsRun = true;
         while (this.pendingActions.length) {
+          this.allActionsRun = false;
           action = this.pendingActions.shift();
           action(this, this.context);
           if (this.shouldHold) {
             break;
-          } else {
-            _results.push(void 0);
+          }
+          if (!this.pendingActions.length) {
+            this.allActionsRun = true;
           }
         }
-        return _results;
+        if (this.allActionsRun) {
+          return this.transitionFinished.dispatch(this.node.to);
+        }
       } catch (_error) {
         e = _error;
         if (e.message === "Halt") {
@@ -210,8 +233,6 @@
         } else {
           throw e;
         }
-      } finally {
-        this.failedAction = this.context = null;
       }
     };
 
@@ -247,4 +268,214 @@
       return modules[transformedPath]();
     }
   };
+})();
+
+(function() {
+  var modules = window.modules || [];
+  var multi_signal_relayCache = null;
+  var multi_signal_relayFunc = function() {
+    return (function() {
+  var MultiSignalRelay, Signal,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  Signal = require("cronus/signal");
+
+  MultiSignalRelay = (function(_super) {
+    __extends(MultiSignalRelay, _super);
+
+    function MultiSignalRelay(signals) {
+      var signal, _i, _len;
+
+      MultiSignalRelay.__super__.constructor.call(this);
+      for (_i = 0, _len = signals.length; _i < _len; _i++) {
+        signal = signals[_i];
+        signal.add(this.dispatch);
+      }
+    }
+
+    MultiSignalRelay.prototype.applyListeners = function(rest) {
+      var listener, _i, _len, _ref, _results;
+
+      _ref = this.listeners;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        _results.push(listener.apply(listener, rest));
+      }
+      return _results;
+    };
+
+    return MultiSignalRelay;
+
+  })(Signal);
+
+  return MultiSignalRelay;
+
+}).call(this);
+
+  };
+  modules.cronus__multi_signal_relay = function() {
+    if (multi_signal_relayCache === null) {
+      multi_signal_relayCache = multi_signal_relayFunc();
+    }
+    return multi_signal_relayCache;
+  };
+  window.modules = modules;
+})();
+
+(function() {
+  var modules = window.modules || [];
+  var signalCache = null;
+  var signalFunc = function() {
+    return (function() {
+  var Signal,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __slice = [].slice;
+
+  Signal = (function() {
+    function Signal() {
+      this.dispatch = __bind(this.dispatch, this);      this.isApplyingListeners = false;
+      this.listeners = [];
+      this.onceListeners = [];
+      this.removeCache = [];
+    }
+
+    Signal.prototype.add = function(listener) {
+      return this.listeners.push(listener);
+    };
+
+    Signal.prototype.addOnce = function(listener) {
+      this.onceListeners.push(listener);
+      return this.add(listener);
+    };
+
+    Signal.prototype.remove = function(listener) {
+      if (this.isApplyingListeners) {
+        return this.removeCache.push(listener);
+      } else {
+        if (this.listeners.indexOf(listener) !== -1) {
+          return this.listeners.splice(this.listeners.indexOf(listener), 1);
+        }
+      }
+    };
+
+    Signal.prototype.removeAll = function() {
+      return this.listeners = [];
+    };
+
+    Signal.prototype.numListeners = function() {
+      return this.listeners.length;
+    };
+
+    Signal.prototype.dispatch = function() {
+      var rest;
+
+      rest = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      this.isApplyingListeners = true;
+      this.applyListeners(rest);
+      this.removeOnceListeners();
+      this.isApplyingListeners = false;
+      return this.clearRemoveCache();
+    };
+
+    Signal.prototype.applyListeners = function(rest) {
+      var listener, _i, _len, _ref, _results;
+
+      _ref = this.listeners;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        _results.push(listener.apply(listener, rest));
+      }
+      return _results;
+    };
+
+    Signal.prototype.removeOnceListeners = function() {
+      var listener, _i, _len, _ref;
+
+      _ref = this.onceListeners;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        this.remove(listener);
+      }
+      return this.onceListeners = [];
+    };
+
+    Signal.prototype.clearRemoveCache = function() {
+      var listener, _i, _len, _ref;
+
+      _ref = this.removeCache;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        this.remove(listener);
+      }
+      return this.removeCache = [];
+    };
+
+    return Signal;
+
+  })();
+
+  return Signal;
+
+}).call(this);
+
+  };
+  modules.cronus__signal = function() {
+    if (signalCache === null) {
+      signalCache = signalFunc();
+    }
+    return signalCache;
+  };
+  window.modules = modules;
+})();
+
+(function() {
+  var modules = window.modules || [];
+  var signal_relayCache = null;
+  var signal_relayFunc = function() {
+    return (function() {
+  var Signal, SignalRelay,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  Signal = require("cronus/signal");
+
+  SignalRelay = (function(_super) {
+    __extends(SignalRelay, _super);
+
+    function SignalRelay(signal) {
+      SignalRelay.__super__.constructor.call(this);
+      signal.add(this.dispatch);
+    }
+
+    SignalRelay.prototype.applyListeners = function(rest) {
+      var listener, _i, _len, _ref, _results;
+
+      _ref = this.listeners;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        _results.push(listener.apply(listener, rest));
+      }
+      return _results;
+    };
+
+    return SignalRelay;
+
+  })(Signal);
+
+  return SignalRelay;
+
+}).call(this);
+
+  };
+  modules.cronus__signal_relay = function() {
+    if (signal_relayCache === null) {
+      signal_relayCache = signal_relayFunc();
+    }
+    return signal_relayCache;
+  };
+  window.modules = modules;
 })();

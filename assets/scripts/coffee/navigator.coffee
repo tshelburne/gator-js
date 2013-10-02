@@ -23,11 +23,14 @@ class Navigator
 
 	_run = (actions)->
 		try
+			@allActionsRun = true
 			while @pendingActions.length
+				@allActionsRun = false
 				action = @pendingActions.shift()
 				action @, @context
 				break if @shouldHold
-			@transitionFinished.dispatch @node.to unless @pendingActions.length
+				@allActionsRun = true unless @pendingActions.length
+			@transitionFinished.dispatch @node.to if @allActionsRun
 		catch e
 			if e.message is "Halt" then @failedAction?() else throw e
 
