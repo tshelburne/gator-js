@@ -6,7 +6,6 @@ describe "NavigationGraph", ->
 	graph = null
 	failedAction = spyAction1 = spyAction2 = spyAction3 = spyAction4 = null	
 
-
 	beforeEach ->
 		graph = new NavigationGraph(new Navigator)
 		
@@ -56,6 +55,19 @@ describe "NavigationGraph", ->
 			graph.transitionTo 'state1', 'context', failedAction
 			expect(spyAction1).toHaveBeenCalled()
 			expect(spyAction4).toHaveBeenCalled()
+
+	describe "#registerActionAt", ->
+		test = null
+
+		firstAction = -> test = "first"
+
+		lastAction = -> test = "last"
+
+		it "will register the actions to be run on the matching transitions", ->
+			graph.registerAction lastAction
+			graph.registerActionAt "first", firstAction
+			graph.transitionTo 'state1', 'context', failedAction
+			expect(test).toEqual "last"
 
 	describe "#canTransitionTo", ->
 

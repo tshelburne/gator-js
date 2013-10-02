@@ -72,6 +72,26 @@
       return _results;
     };
 
+    NavigationGraph.prototype.registerActionAt = function(position, action, from, to) {
+      var node, _i, _len, _ref, _results;
+
+      if (from == null) {
+        from = null;
+      }
+      if (to == null) {
+        to = null;
+      }
+      _ref = this.nodes;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        node = _ref[_i];
+        if (node.matches(from, to)) {
+          _results.push(node.registerActionAt(position, action));
+        }
+      }
+      return _results;
+    };
+
     NavigationGraph.prototype.canTransitionTo = function(to) {
       return this.hasTransition(this.currentFrom, to);
     };
@@ -124,6 +144,8 @@
   var NavigationNode;
 
   NavigationNode = (function() {
+    var _getIndexFrom;
+
     function NavigationNode(from, to) {
       this.from = from;
       this.to = to;
@@ -134,8 +156,31 @@
       return this.actions.push(action);
     };
 
+    NavigationNode.prototype.registerActionAt = function(position, action) {
+      return this.actions.splice(_getIndexFrom.call(this, position), 0, action);
+    };
+
     NavigationNode.prototype.matches = function(from, to) {
       return ((from == null) || this.from === from) && ((to == null) || this.to === to);
+    };
+
+    _getIndexFrom = function(position) {
+      if (typeof position === 'number') {
+        if (position < 0) {
+          return 0;
+        }
+        if (position <= this.actions.length) {
+          return position;
+        }
+        return this.actions.length;
+      } else {
+        if (position === "first") {
+          return 0;
+        }
+        if (position === "last") {
+          return this.actions.length;
+        }
+      }
     };
 
     return NavigationNode;

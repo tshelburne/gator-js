@@ -19,6 +19,8 @@ class NavigationGraph
 
 	registerAction: (action, from=null, to=null)-> node.registerAction action for node in @nodes when node.matches(from, to)
 
+	registerActionAt: (position, action, from=null, to=null)-> node.registerActionAt position, action for node in @nodes when node.matches(from, to)
+
 	canTransitionTo: (to)-> @hasTransition @currentFrom, to
 
 	transitionTo: (to, context=null, failedAction=null)-> 
