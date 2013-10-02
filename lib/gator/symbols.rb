@@ -1,13 +1,13 @@
 require "keystone"
 
-module LIBRARY_NAME_UCASE
+module Gator
 	
 	def self.pipeline
 		@@pipeline ||= ::Keystone.bootstrap("#{root_path}/config/assets.rb")
 	end
 
 	def self.keystone_compiler
-		@@keystone_compiler ||= pipeline.compiler("gator.js")
+		@@keystone_compiler ||= pipeline.compiler("gator.min.js")
 	end
 
 	def self.root_path
