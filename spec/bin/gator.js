@@ -161,7 +161,8 @@
   var navigatorCache = null;
   var navigatorFunc = function() {
     return (function() {
-  var Navigator, Signal;
+  var Navigator, Signal,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Signal = require('cronus/signal');
 
@@ -169,6 +170,9 @@
     var _run;
 
     function Navigator() {
+      this.halt = __bind(this.halt, this);
+      this["continue"] = __bind(this["continue"], this);
+      this.hold = __bind(this.hold, this);
       var _this = this;
 
       this.inTransition = false;

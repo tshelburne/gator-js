@@ -17,14 +17,14 @@ class Navigator
 		@pendingActions = (action for action in @node.actions)
 		_run.call @, @pendingActions
 
-	hold: -> @shouldHold = true if @inTransition 
+	hold: => @shouldHold = true if @inTransition 
 
-	continue: -> 
+	continue: => 
 		if @inTransition
 			@shouldHold = false
 			_run.call @, @pendingActions
 
-	halt: -> 
+	halt: => 
 		if @inTransition
 			if @shouldHold
 				@shouldHold = false
